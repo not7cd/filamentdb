@@ -1,32 +1,22 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView
+from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic.edit import CreateView, FormMixin, ModelFormMixin
 from django.shortcuts import render
 from .models import Spool, Material
 from .forms import SpoolForm, MaterialForm, VariantForm
 
 
-# ...
-def detail(request, spool_id):
-    return HttpResponse("You're looking at question %s." % spool_id)
+class HomePageView(TemplateView):
+    template_name = "index.html"
 
-
-def results(request, question_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % question_id)
-
-
-def vote(request, question_id):
-    return HttpResponse("You're voting on question %s." % question_id)
-
-
-def index(request):
-    latest_spool_list = Spool.objects.order_by("-pub_date")[:5]
-    context = {"latest_spool_list": latest_spool_list}
-    return render(request, "index.html", context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['latest_spool_list'] = Spool.objects.order_by("-pub_date")[:5]
+        return context
 
 
 class MaterialListView(ListView):
@@ -37,25 +27,27 @@ class MaterialListView(ListView):
         return context
 
 
-@login_required()
-class MaterialCreate(CreateView):
+class MaterialCreate(LoginRequiredMixin, CreateView):
     form_class = MaterialForm
+    success_url = "/materials"
     template_name = "filaments/material_form.html"
 
 
-@login_required()
-class VariantCreate(CreateView):
+class VariantCreate(LoginRequiredMixin, CreateView):
     form_class = VariantForm
     template_name = "filaments/variant_form.html"
 
 
-def spool_detail(request, spool_id):
-    spool = Spool.objects.get(pk=spool_id)
-    context = {"spool": spool}
-    return render(request, "spool_detail.html", context)
+class SpoolDetailView(DetailView):
+    model = Spool
 
 
-@login_required
-class SpoolCreate(CreateView):
+class SpoolCreate(LoginRequiredMixin, CreateView):
     form_class = SpoolForm
     template_name = "filaments/spool_form.html"
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.owner_id = self.request.user.ownerprofile.id
+        self.object.save()
+        return FormMixin.form_valid(self, form)

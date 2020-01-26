@@ -1,0 +1,28 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+{% block main %}
+    <div class="row">
+        <div class="col">
+            <img src="{% static "generic_spool.jpeg" %}" class="card-img-top" alt="...">
+        </div>
+        <div class="col">
+            <h2>{{ object.variant.material }}</h2>
+            <h3>{{ object.variant.name }}</h3>
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th scope="row">Date added</th>
+                  <td>{{ object.pub_date | date }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Mass left</th>
+                  <td>{{ object.mass_net }} grams</td>
+                </tr>
+              </tbody>
+            </table>
+
+
+        </div>
+    </div>
+{% endblock %}

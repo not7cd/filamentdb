@@ -28,7 +28,7 @@ class Material(models.Model):
     description = models.CharField(max_length=500, blank=True)
 
     def get_absolute_url(self):
-        return reverse("material", kwargs={"pk": self.pk})
+        return reverse("material-detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.brand} {self.plastic} {self.diameter} {self.description}"
@@ -39,7 +39,7 @@ class Variant(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
-        return reverse("material", kwargs={"pk": self.pk})
+        return reverse("variant-detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.material} {self.name}"
@@ -51,3 +51,6 @@ class Spool(models.Model):
     mass_net = models.FloatField()
     comment = models.CharField(max_length=500, blank=True)
     owner = models.ForeignKey(OwnerProfile, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse("spool-detail", kwargs={"pk": self.pk})
