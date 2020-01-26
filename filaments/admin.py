@@ -15,7 +15,7 @@ admin.site.register(Variant)
 class OwnerProfileInline(admin.StackedInline):
     model = OwnerProfile
     can_delete = False
-    verbose_name_plural = 'owner'
+    verbose_name_plural = "owner"
 
 
 # Define a new User admin

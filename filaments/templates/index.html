@@ -7,11 +7,12 @@
     <div class="starter-template">
         <h1>FilamentDB</h1>
         <p class="lead">Filament tracking for shared environment.</p>
-    <a class="btn btn-primary" href="{% url 'spool_add' %}" role="button">Add new spool</a>
+    <a class="btn btn-primary" href="{% url 'spool-create' %}" role="button">Add new spool</a>
     </div>
 
     {% if latest_spool_list %}
         <div class="row row-cols-1 row-cols-md-3">
+        {% for spool in latest_spool_list %}
             <div class="col mb-4">
                 <div class="card h-100">
                     <img src="{% static "generic_spool.jpeg" %}" class="card-img-top" alt="...">
@@ -22,6 +23,7 @@
                     </div>
                 </div>
             </div>
+        {% endfor %}
         </div>
 
     {% else %}
