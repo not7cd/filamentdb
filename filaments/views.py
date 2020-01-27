@@ -1,13 +1,9 @@
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import DetailView, ListView, TemplateView
-from django.views.generic.edit import CreateView, FormMixin, ModelFormMixin
-from django.shortcuts import render
-from .models import Spool, Material
+from django.views.generic.edit import CreateView, FormMixin
+
 from .forms import SpoolForm, MaterialForm, VariantForm
+from .models import Spool, Material
 
 
 class HomePageView(TemplateView):
@@ -15,7 +11,9 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['latest_spool_list'] = Spool.objects.order_by("-pub_date")[:5]
+        context['latest_spool_list'] = Spool.objects.order_by("-pub_date")[:5]\
+            .select_related('variant')\
+            .select_related('variant__material')
         return context
 
 
