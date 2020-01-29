@@ -7,23 +7,33 @@
     <div class="starter-template">
         <h1>FilamentDB</h1>
         <p class="lead">Filament tracking for shared environment.</p>
-    <a class="btn btn-primary" href="{% url 'spool-create' %}" role="button">Add new spool</a>
+        <a class="btn btn-primary" href="{% url 'spool-create' %}" role="button">Add new spool</a>
     </div>
+
+    {% if plastic_stats %}
+        <div class="card text-white bg-info mb-3" style="max-width: 30rem;">
+            <div class="card-header">Plastic mass</div>
+            <div class="card-body">
+                <canvas id="myChart"></canvas>
+
+            </div>
+        </div>
+    {% endif %}
 
     {% if latest_spool_list %}
         <div class="row row-cols-1 row-cols-md-3">
-        {% for spool in latest_spool_list %}
-            <div class="col mb-4">
-                <div class="card h-100">
-                    <img src="{% static "generic_spool.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ spool.variant }}</h5>
-                        <p class="card-text">{{ spool.mass_net }}</p>
-                        <a href="{% url 'spool-detail' spool.pk %}" class="card-link">View</a>
+            {% for spool in latest_spool_list %}
+                <div class="col mb-4">
+                    <div class="card h-100">
+                        <img src="{% static "generic_spool.jpeg" %}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ spool.variant }}</h5>
+                            <p class="card-text">{{ spool.mass_net }}</p>
+                            <a href="{% url 'spool-detail' spool.pk %}" class="card-link">View</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
         </div>
 
     {% else %}
@@ -32,4 +42,27 @@
         </div>
     {% endif %}
 
+{% endblock %}
+
+{% block after-scripts %}
+    <script defer>
+        $(document).ready(
+            function () {
+                data = {
+                    datasets: [{
+                        data: [{% for p in plastic_stats %} {{ p.total_mass | default_if_none:0 }}, {% endfor %}]
+                    }],
+
+                    labels: [
+                        {% for p in plastic_stats %} "{{ p.plastic }}", {% endfor %}
+                    ]
+                };
+                let ctx = document.getElementById('myChart').getContext('2d');
+                let myDoughnutChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: data,
+                });
+            }
+        );
+    </script>
 {% endblock %}

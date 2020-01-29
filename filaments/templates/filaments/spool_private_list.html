@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+{% load crispy_forms_tags %}
+{% block main %}
+<h1>Private stash of user {{ auth_user.username }}</h1>
+
+<ul class="list-group">
+{% for spool in object_list %}
+    <li class="list-group-item">{{ spool.variant }} - {{ spool.mass_net }} - <a href="{% url 'spool-detail' spool.pk %}" class="card-link">View</a></li>
+{% empty %}
+    <li>No spools found.</li>
+{% endfor %}
+</ul>
+{% endblock %}

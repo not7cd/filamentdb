@@ -2,12 +2,13 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from filaments.models import Material, Spool, Variant, OwnerProfile
+from filaments.models import Material, Spool, Variant, OwnerProfile, MassChange
 
 # Register your models here.
 admin.site.register(Material)
 admin.site.register(Spool)
 admin.site.register(Variant)
+admin.site.register(MassChange)
 
 
 # Define an inline admin descriptor for Employee model
