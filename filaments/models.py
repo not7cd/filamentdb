@@ -55,7 +55,11 @@ class Spool(models.Model):
     def get_absolute_url(self):
         return reverse("spool-detail", kwargs={"pk": self.pk})
 
+
 class MassChange(models.Model):
     pub_date = models.DateTimeField("date added", auto_now_add=True, blank=True)
     spool = models.ForeignKey(Spool, on_delete=models.CASCADE)
     mass_net = models.FloatField()
+
+    def __str__(self):
+        return f"{self.pub_date} {self.mass_net} for {self.spool}"
