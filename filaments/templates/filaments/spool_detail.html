@@ -21,7 +21,9 @@
                 </tr>
               </tbody>
             </table>
+            <p>{{ object.comment }}</p>
             <a href="{% url 'spool-update' spool.pk %}" class="btn btn-primary">Update</a>
+             <a href="{% url 'spool-delete' spool.pk %}" class="btn btn-danger">Delete</a>
 
         </div>
     </div>

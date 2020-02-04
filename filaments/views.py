@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, OuterRef, Sum, Subquery
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView
-from django.views.generic.edit import CreateView, FormMixin, UpdateView
+from django.views.generic.edit import CreateView, FormMixin, UpdateView, DeleteView
 
 from .forms import SpoolForm, MaterialForm, VariantForm
 from .models import Spool, Material
@@ -54,6 +55,7 @@ class MaterialCreate(LoginRequiredMixin, CreateView):
 class VariantCreate(LoginRequiredMixin, CreateView):
     form_class = VariantForm
     template_name = "filaments/variant_form.html"
+    success_url = reverse_lazy('index')
 
 
 class SpoolDetailView(DetailView):
@@ -75,6 +77,11 @@ class SpoolUpdate(LoginRequiredMixin, UpdateView):
     model = Spool
     form_class = SpoolForm
     template_name = "filaments/spool_update.html"
+
+
+class SpoolDelete(DeleteView):
+    model = Spool
+    success_url = reverse_lazy('index')
 
 
 class SpoolPrivateListView(LoginRequiredMixin, ListView):
